@@ -17,13 +17,13 @@
       <Window
         v-for="windowProps in windows"
         :active="windowProps.active"
-        :key="windowProps.windowId"
+        :key="windowProps.id"
         :x="windowProps.x"
         :y="windowProps.y"
         :title="windowProps.title"
         :width="windowProps.width"
         :height="windowProps.height"
-        :windowId="windowProps.windowId"
+        :id="windowProps.id"
         :maximized="windowProps.maximized"
         :minimized="windowProps.minimized"
         :icon="windowProps.app.icon"
@@ -110,8 +110,8 @@ export default {
     randomId() {
       return Math.floor(Math.random() * 99999999999);
     },
-    findWindow(windowId) {
-      return this.windows.find(w => w.windowId == windowId);
+    findWindow(id) {
+      return this.windows.find(w => w.id == id);
     },
     deselectShortcuts() {
       if (!this.shortcuts.find(s => s.selected)) return;
@@ -125,20 +125,21 @@ export default {
       this.shortcuts.find(s => s.app == app).selected = true;
     },
     openApp(app) {
+      this.deactivateWindows();
+      this.deselectShortcuts();
+
       const windowProps = {
         title: app.name,
         x: 100 + this.windows.length * 20,
         y: 100 + this.windows.length * 20,
         width: app.defaultWidth,
         height: app.defaultHeight,
-        windowId: this.randomId(),
+        id: this.randomId(),
         active: true,
         maximized: false,
         minimized: false,
         app: app
       };
-      this.deactivateWindows();
-      this.deselectShortcuts();
       this.windows.push(windowProps);
     },
     maximizeWindow(data) {
@@ -152,10 +153,10 @@ export default {
       this.activeWindow = null;
     },
     closeWindow(data) {
-      this.windows = this.windows.filter(w => w.windowId != data.id);
+      this.windows = this.windows.filter(w => w.id != data.id);
     },
     moveWindow(data) {
-      const movedWindow = this.findWindow(data.component.windowId);
+      const movedWindow = this.findWindow(data.component.id);
       movedWindow.x = data.x;
       movedWindow.y = data.y;
     },
@@ -189,7 +190,7 @@ export default {
     activateWindow(data) {
       this.activeWindow = this.findWindow(data.id);
       this.activeWindow.minimized = false;
-      this.windows.forEach(w => (w.active = w.windowId == data.id));
+      this.windows.forEach(w => (w.active = w.id == data.id));
     }
   }
 };

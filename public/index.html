@@ -9,6 +9,37 @@
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
   <body>
+    <style>
+      body {
+        font-family: "Pixelated MS Sans Serif",Arial;
+        font-size: 11px;
+      }
+
+      .menu {
+        position: absolute;
+        bottom: 24px;
+        left: 2px;
+        box-shadow: inset -1px -1px #0a0a0a,inset 1px 1px #fff,inset -2px -2px grey,inset 2px 2px #dfdfdf;
+      }
+
+      .menu__inner {
+        background: silver;
+        margin: 2px;
+      }
+
+      .menu__item {
+        padding: 2px 5px;
+      }
+
+      .menu__item img {
+        vertical-align: middle;
+      }
+
+      .menu__item:hover, .menu__item:active, .menu__item.active {
+        background-color: darkblue;
+        color: #fff;
+      }
+    </style>
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>

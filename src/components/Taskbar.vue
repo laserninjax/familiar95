@@ -1,16 +1,24 @@
 <template>
   <div class="taskbar">
     <div class="taskbar__inner">
-      <button class="start-button">
+      <button class="start-button" :class="{ active: startMenuOpen }" @click="toggleStartMenu">
         <span>
           <img src="./../assets/icons/start_icon.png" />
           Start
         </span>
       </button>
+      <div v-if="startMenuOpen" class="menu" @click="closeStartMenu">
+        <div class="menu__inner">
+          <div class="menu__item">
+            <img src="./../assets/icons/turn_off_computer_display_only-0.png" />
+            Shut down
+          </div>
+        </div>
+      </div>
       <div class="taskbar__windows">
         <button
           v-for="taskbarWindow in windows"
-          :key="taskbarWindow.windowId"
+          :key="taskbarWindow.id"
           class="taskbar__window"
           :class="{ active: activeWindow == taskbarWindow }"
           @click="
@@ -18,7 +26,7 @@
               !taskbarWindow.minimized && taskbarWindow.active
                 ? 'minimize-window'
                 : 'activate-window',
-              { id: taskbarWindow.windowId }
+              { id: taskbarWindow.id }
             )
           "
         >
@@ -41,13 +49,24 @@ export default {
     activeWindow: { type: Object, default: () => null }
   },
   data() {
-    return {};
+    return {
+      startMenuOpen: false
+    };
   },
   computed: {},
   methods: {
     iconPath(taskbarWindow) {
       if (!taskbarWindow.app.icon) return null;
       return require("../assets/icons/" + taskbarWindow.app.icon + ".png");
+    },
+    openStartMenu() {
+      this.startMenuOpen = true;
+    }, 
+    closeStartMenu() {
+      this.startMenuOpen = false;
+    },
+    toggleStartMenu() {
+      this.startMenuOpen = !this.startMenuOpen;
     },
     openFullscreen() {
       const docElm = document.documentElement;
@@ -66,6 +85,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.active {
+  font-weight: 700;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #0a0a0a,
+    inset -2px -2px #dfdfdf, inset 2px 2px #808080;
+}
+
 .taskbar {
   position: absolute;
   bottom: 0;
@@ -107,12 +132,6 @@ export default {
       padding: 0 3px 0 5px;
       margin: 4px 2px 0px 2px;
 
-      &.active {
-        font-weight: 700;
-        box-shadow: inset -1px -1px #ffffff, inset 1px 1px #0a0a0a,
-          inset -2px -2px #dfdfdf, inset 2px 2px #808080;
-      }
-
       img {
         height: 16px;
         vertical-align: middle;
@@ -125,7 +144,25 @@ export default {
       position: absolute;
       right: 3px;
       top: 3px;
-      box-shadow: inset 0 0 1px grey;
+      height: 24px;
+      line-height: 24px;
+      padding: 0 5px;
+      box-shadow: inset -1px -1px #ffffff, inset 1px 1px #0a0a0a,
+          inset -2px -2px #dfdfdf, inset 2px 2px #808080;
+    }
+
+    .menu {
+      padding-left: 32px;
+      background: grey;
+    }
+  
+    .menu__item {
+      min-width: 200px;
+
+      img {
+        width: 32px;
+        margin-right: 2px;
+      }
     }
   }
 }

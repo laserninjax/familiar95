@@ -2,7 +2,7 @@
   <div
     class="window"
     :style="layoutStyle"
-    @mousedown="$emit('click-window', { id: windowId })"
+    @mousedown="$emit('click-window', { id: id })"
   >
     <div class="title-bar" :class="{ inactive: !active }" @mousedown="grab">
       <div class="title-bar-text">
@@ -39,7 +39,7 @@ export default {
     y: { type: Number, required: true },
     width: { type: Number, required: true },
     height: { type: Number, required: true },
-    windowId: { type: Number, required: true },
+    id: { type: Number, required: true },
     active: { type: Boolean, required: true },
     maximized: { type: Boolean, required: true },
     minimized: { type: Boolean, required: true }
@@ -63,13 +63,13 @@ export default {
   },
   methods: {
     minimize() {
-      this.$emit("minimize", { id: this.windowId });
+      this.$emit("minimize", { id: this.id });
     },
     maximize() {
-      this.$emit("maximize", { id: this.windowId });
+      this.$emit("maximize", { id: this.id });
     },
     close() {
-      this.$emit("close", { id: this.windowId });
+      this.$emit("close", { id: this.id });
     }
   }
 };
