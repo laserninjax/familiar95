@@ -1,5 +1,18 @@
 <template>
-  <div id="desktop">
+  <div id="desktop" @mousedown="deselectShortcuts">
+    <div id="shortcuts" class="shortcuts" ref="shortcuts">
+      <Shortcut
+        v-for="shortcut in shortcuts"
+        :key="shortcut.app.name"
+        :app="shortcut.app"
+        :x="shortcut.x"
+        :y="shortcut.y"
+        :selected="shortcut.selected"
+        @select="selectShortcut"
+        @open="openApp"
+        @move="moveShortcut"
+      />
+    </div>
     <div ref="windowsContainer" id="windows">
       <Window
         v-for="windowProps in windows"
@@ -23,6 +36,21 @@
         <component :is="windowProps.app" />
       </Window>
     </div>
+    <div ref="notifications" id="notifications">
+      <Notification
+        v-for="notification in notifications"
+        :key="notification.id"
+        :x="notification.x"
+        :y="notification.y"
+        :type="notification.type"
+        :title="notification.title"
+        :id="notification.id"
+        @close="closeNotification"
+        @move="moveNotification"
+      >
+        <div v-html="notification.content"></div>
+      </Notification>
+    </div>
     <Taskbar
       :windows="windows"
       :activeWindow="activeWindow"
@@ -34,7 +62,9 @@
 
 <script>
 import Window from "./Window.vue";
+import Notification from "./dialogs/Notification.vue";
 import Taskbar from "./Taskbar.vue";
+import Shortcut from "./Shortcut.vue";
 
 // Apps
 import About from "./apps/About.vue";
@@ -46,38 +76,69 @@ export default {
   props: {},
   components: {
     Taskbar,
-    Window
+    Window,
+    Notification,
+    Shortcut
   },
   data() {
     return {
       windows: [],
-      activeWindow: null
+      notifications: [],
+      activeWindow: null,
+      shortcuts: [
+        { app: About, selected: false, x: 100, y: 200 },
+        { app: Mina, selected: false, x: 100, y: 300 },
+        { app: Opomuc, selected: false, x: 200, y: 300 }
+      ]
     };
   },
   created() {
+    for(let i=0; i < 5; i++) {
+      setTimeout(() => {
+        this.createNotification(
+          {
+            type: "error",
+            title: "Fatal error",
+            content: "<p>C:\\WINDOWS\\system32\\rundll32.exe</p><p>Application not found.</p>"
+          }
+        )
+      }, 100 * i)
+    }
   },
-  mounted() {
-    this.openApp(Mina);
-    this.openApp(About);
-    this.openApp(Opomuc);
-  },
+  mounted() {},
   methods: {
+    randomId() {
+      return Math.floor(Math.random() * 99999999999);
+    },
     findWindow(windowId) {
       return this.windows.find(w => w.windowId == windowId);
+    },
+    deselectShortcuts() {
+      if (!this.shortcuts.find(s => s.selected)) return;
+      this.shortcuts.forEach(s => (s.selected = false));
+    },
+    deactivateWindows() {
+      this.windows.forEach(w => (w.active = false));
+    },
+    selectShortcut(app) {
+      this.deselectShortcuts();
+      this.shortcuts.find(s => s.app == app).selected = true;
     },
     openApp(app) {
       const windowProps = {
         title: app.name,
-        x: Math.round(Math.random() * 1000),
-        y: Math.round(Math.random() * 500),
+        x: 100 + this.windows.length * 20,
+        y: 100 + this.windows.length * 20,
         width: app.defaultWidth,
         height: app.defaultHeight,
-        windowId: Math.random() * 99999999999,
-        active: false,
+        windowId: this.randomId(),
+        active: true,
         maximized: false,
         minimized: false,
         app: app
       };
+      this.deactivateWindows();
+      this.deselectShortcuts();
       this.windows.push(windowProps);
     },
     maximizeWindow(data) {
@@ -94,9 +155,36 @@ export default {
       this.windows = this.windows.filter(w => w.windowId != data.id);
     },
     moveWindow(data) {
-      const currentWindow = this.findWindow(data.id);
-      currentWindow.x = data.x;
-      currentWindow.y = data.y;
+      const movedWindow = this.findWindow(data.component.windowId);
+      movedWindow.x = data.x;
+      movedWindow.y = data.y;
+    },
+    moveShortcut(data) {
+      const movedShortcut = this.shortcuts.find(
+        s => s.app == data.component.app
+      );
+      movedShortcut.x = data.x;
+      movedShortcut.y = data.y;
+    },
+    createNotification(data) {
+      this.notifications.push({
+        id: this.randomId(),
+        title: data.title,
+        content: data.content,
+        x: window.innerWidth/2 - 200 + this.notifications.length * 20,
+        y: window.innerHeight/2 - 100 + this.notifications.length * 20,
+        type: data.type
+      });
+    },
+    closeNotification(data) {
+      this.notifications = this.notifications.filter(w => w.id != data.id);
+    },
+    moveNotification(data) {
+      const movedNotification = this.notifications.find(
+        n => n.id == data.component.id
+      );
+      movedNotification.x = data.x;
+      movedNotification.y = data.y;
     },
     activateWindow(data) {
       this.activeWindow = this.findWindow(data.id);

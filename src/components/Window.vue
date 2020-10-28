@@ -4,11 +4,7 @@
     :style="layoutStyle"
     @mousedown="$emit('click-window', { id: windowId })"
   >
-    <div
-      class="title-bar"
-      :class="{ inactive: !active }"
-      @mousedown="grabWindow"
-    >
+    <div class="title-bar" :class="{ inactive: !active }" @mousedown="grab">
       <div class="title-bar-text">
         <img v-if="icon" :src="iconPath" />
         {{ title }}
@@ -32,6 +28,8 @@
 </template>
 
 <script>
+import Draggable from "../mixins/Draggable.js";
+
 export default {
   name: "Window",
   props: {
@@ -46,15 +44,7 @@ export default {
     maximized: { type: Boolean, required: true },
     minimized: { type: Boolean, required: true }
   },
-  data() {
-    return {
-      grabbed: false,
-      grabX: null,
-      grabY: null,
-      startX: null,
-      startY: null
-    };
-  },
+  mixins: [Draggable],
   computed: {
     iconPath() {
       return require("../assets/icons/" + this.icon + ".png");
@@ -80,29 +70,6 @@ export default {
     },
     close() {
       this.$emit("close", { id: this.windowId });
-    },
-    grabWindow(e) {
-      this.grabbed = true;
-      this.grabX = e.clientX;
-      this.grabY = e.clientY;
-      this.startX = this.x;
-      this.startY = this.y;
-
-      document.addEventListener("mousemove", this.moveWindow);
-
-      document.addEventListener("mouseup", () => {
-        this.grabbed = false;
-        document.removeEventListener("mousemove", this.moveWindow);
-      });
-    },
-    moveWindow(e) {
-      if (!this.grabbed) return;
-
-      this.$emit("move", {
-        id: this.windowId,
-        x: Math.round(this.startX + (e.clientX - this.grabX)),
-        y: Math.round(this.startY + (e.clientY - this.grabY))
-      });
     }
   }
 };

@@ -7,7 +7,7 @@
 <script>
 export default {
   name: "About",
-  icon: "briefcase-1",
+  icon: "briefcase-0",
   defaultWidth: 300,
   defaultHeight: 200
 };

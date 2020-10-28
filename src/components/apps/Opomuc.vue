@@ -1,9 +1,6 @@
 <template>
   <div>
-    <img
-      src="https://i.imgur.com/m4EvWkF.jpg"
-      style="width: 100%"
-    />
+    <img src="https://i.imgur.com/m4EvWkF.jpg" style="width: 100%" />
   </div>
 </template>
 

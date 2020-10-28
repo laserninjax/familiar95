@@ -3,7 +3,7 @@
     <div class="taskbar__inner">
       <button class="start-button">
         <span>
-          <img src="./../assets/icons/windows_logo-1.png" />
+          <img src="./../assets/icons/start_icon.png" />
           Start
         </span>
       </button>
@@ -46,7 +46,6 @@ export default {
   computed: {},
   methods: {
     iconPath(taskbarWindow) {
-      console.log(taskbarWindow.icon);
       if (!taskbarWindow.app.icon) return null;
       return require("../assets/icons/" + taskbarWindow.app.icon + ".png");
     },
@@ -91,8 +90,10 @@ export default {
 
     img {
       width: 16px;
+      height: 14px;
       vertical-align: middle;
-      margin-top: -2px;
+      margin-top: -4px;
+      margin-left: 2px;
     }
   }
 
