@@ -1,10 +1,9 @@
 <template>
   <div id="desktop">
     <div ref="windowsContainer" id="windows">
-      <component
+      <Window
         v-for="windowProps in windows"
-        :top="windowProps.top"
-        :is="windowClass"
+        :active="windowProps.active"
         :key="windowProps.windowId"
         :x="windowProps.x"
         :y="windowProps.y"
@@ -13,53 +12,83 @@
         :height="windowProps.height"
         :windowId="windowProps.windowId"
         :maximized="windowProps.maximized"
+        :minimized="windowProps.minimized"
+        :icon="windowProps.app.icon"
         @move="moveWindow"
         @close="closeWindow"
         @maximize="maximizeWindow"
-        @clickWindow="clickWindow"
-      />
+        @minimize="minimizeWindow"
+        @click-window="activateWindow"
+      >
+        <component :is="windowProps.app" />
+      </Window>
     </div>
+    <Taskbar
+      :windows="windows"
+      :activeWindow="activeWindow"
+      @activate-window="activateWindow"
+      @minimize-window="minimizeWindow"
+    />
   </div>
 </template>
 
 <script>
 import Window from "./Window.vue";
+import Taskbar from "./Taskbar.vue";
+
+// Apps
+import About from "./apps/About.vue";
+import Mina from "./apps/Mina.vue";
+import Opomuc from "./apps/Opomuc.vue";
 
 export default {
   name: "Desktop",
   props: {},
+  components: {
+    Taskbar,
+    Window
+  },
   data() {
     return {
-      windowClass: Window,
-      windows: []
+      windows: [],
+      activeWindow: null
     };
   },
-  created() {},
+  created() {
+  },
   mounted() {
-    for (let i = 0; i < 3; i++) {
-      this.createWindow();
-    }
+    this.openApp(Mina);
+    this.openApp(About);
+    this.openApp(Opomuc);
   },
   methods: {
     findWindow(windowId) {
       return this.windows.find(w => w.windowId == windowId);
     },
-    createWindow() {
+    openApp(app) {
       const windowProps = {
-        title: "test",
+        title: app.name,
         x: Math.round(Math.random() * 1000),
         y: Math.round(Math.random() * 500),
-        width: 300,
-        height: 300,
+        width: app.defaultWidth,
+        height: app.defaultHeight,
         windowId: Math.random() * 99999999999,
-        top: true,
-        maximized: false
+        active: false,
+        maximized: false,
+        minimized: false,
+        app: app
       };
       this.windows.push(windowProps);
     },
     maximizeWindow(data) {
       const currentWindow = this.findWindow(data.id);
       currentWindow.maximized = !currentWindow.maximized;
+    },
+    minimizeWindow(data) {
+      const currentWindow = this.findWindow(data.id);
+      currentWindow.active = !currentWindow.active;
+      currentWindow.minimized = !currentWindow.minimized;
+      this.activeWindow = null;
     },
     closeWindow(data) {
       this.windows = this.windows.filter(w => w.windowId != data.id);
@@ -69,8 +98,10 @@ export default {
       currentWindow.x = data.x;
       currentWindow.y = data.y;
     },
-    clickWindow(data) {
-      this.windows.forEach(w => (w.top = w.windowId == data.id));
+    activateWindow(data) {
+      this.activeWindow = this.findWindow(data.id);
+      this.activeWindow.minimized = false;
+      this.windows.forEach(w => (w.active = w.windowId == data.id));
     }
   }
 };
@@ -93,6 +124,6 @@ export default {
 #windows {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 36px);
 }
 </style>
