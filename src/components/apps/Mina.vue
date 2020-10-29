@@ -2,9 +2,9 @@
   <div>
     <iframe
       src="https://mina.zlender.si/"
-      width="100%"
-      height="470px"
-      style="border-color: #8e8e8e"
+      width="200%"
+      height="900px"
+      style="border-color: #8e8e8e; transform: scale(0.5) translate(-495px, -430px);"
       title="Minesweeper"
     ></iframe>
   </div>
