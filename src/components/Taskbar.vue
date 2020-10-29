@@ -1,19 +1,25 @@
 <template>
-  <div class="taskbar">
+  <div class="taskbar" @mousedown.stop>
     <div class="taskbar__inner">
-      <button class="start-button" :class="{ active: startMenuOpen }" @click="toggleStartMenu">
+      <button
+        class="start-button"
+        :class="{ active: menuOpen }"
+        @click="toggleMenu"
+      >
         <span>
           <img src="./../assets/icons/start_icon.png" />
           Start
         </span>
       </button>
-      <div v-if="startMenuOpen" class="menu" @click="closeStartMenu">
+      <div v-if="menuOpen" class="menu" @click="closeMenu">
         <div class="menu__graphic">
-            <img src="./../assets/images/windows97start.png" />
+          <img src="./../assets/images/windows97start.png" />
         </div>
         <div class="menu__inner">
           <div class="menu__item">
-            <img src="./../assets/icons/program_folder_16x16px_&_24x24px-0.png" />
+            <img
+              src="./../assets/icons/program_folder_16x16px_&_24x24px-0.png"
+            />
             Programs
           </div>
           <div class="menu__item">
@@ -25,18 +31,20 @@
             Settings
           </div>
           <div class="menu__item">
-            <img src="./../assets/icons/search_in_sheet_16x16px_&_24x24px-0.png" />
+            <img
+              src="./../assets/icons/search_in_sheet_16x16px_&_24x24px-0.png"
+            />
             Find
           </div>
           <div class="menu__item">
             <img src="./../assets/icons/help_book-0.png" />
             Help
           </div>
-          <div class="menu__item" @click="$emit('openApp', runApp)">
+          <div class="menu__item" @click.stop="$emit('openApp', runApp)">
             <img src="./../assets/icons/program_wait-0.png" />
             Run...
           </div>
-          <hr>
+          <hr />
           <div class="menu__item">
             <img src="./../assets/icons/turn_off_computer_display_only-0.png" />
             Shut down...
@@ -70,23 +78,19 @@
 </template>
 
 <script>
-import Run from "./apps/Run.vue"
+import Run from "./apps/Run.vue";
 
 export default {
   name: "Taskbar",
   props: {
     windows: { type: Array, required: true },
     apps: { type: Array, required: true },
-    activeWindow: { type: Object, default: () => null }
-  },
-  data() {
-    return {
-      startMenuOpen: false
-    };
+    activeWindow: { type: Object, default: () => null },
+    menuOpen: { type: Boolean, required: true }
   },
   computed: {
     runApp() {
-      return Run
+      return Run;
     }
   },
   methods: {
@@ -94,14 +98,14 @@ export default {
       if (!taskbarWindow.app.icon) return null;
       return require("../assets/icons/" + taskbarWindow.app.icon + ".png");
     },
-    openStartMenu() {
-      this.startMenuOpen = true;
-    }, 
-    closeStartMenu() {
-      this.startMenuOpen = false;
+    openMenu() {
+      this.$emit("openMenu");
     },
-    toggleStartMenu() {
-      this.startMenuOpen = !this.startMenuOpen;
+    closeMenu() {
+      this.$emit("closeMenu");
+    },
+    toggleMenu() {
+      this.menuOpen ? this.closeMenu() : this.openMenu();
     },
     openFullscreen() {
       const docElm = document.documentElement;
@@ -127,6 +131,7 @@ export default {
 }
 
 .taskbar {
+  z-index: 10000;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -183,7 +188,7 @@ export default {
       line-height: 24px;
       padding: 0 5px;
       box-shadow: inset -1px -1px #ffffff, inset 1px 1px #0a0a0a,
-          inset -2px -2px #dfdfdf, inset 2px 2px #808080;
+        inset -2px -2px #dfdfdf, inset 2px 2px #808080;
     }
 
     .menu {
@@ -200,7 +205,7 @@ export default {
         }
       }
     }
-  
+
     .menu__item {
       min-width: 200px;
 

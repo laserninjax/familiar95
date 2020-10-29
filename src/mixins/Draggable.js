@@ -1,7 +1,7 @@
 export default {
   props: {
-    x: { type: Number, required: true},
-    y: { type: Number, required: true}
+    x: { type: Number, required: true },
+    y: { type: Number, required: true }
   },
   data() {
     return {

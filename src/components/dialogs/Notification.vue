@@ -1,5 +1,8 @@
 <template>
-  <div class="notification-window window" :style="`top: ${y}px; left: ${x}px; width: 400px;`">
+  <div
+    class="notification-window window"
+    :style="`top: ${y}px; left: ${x}px; width: 400px;`"
+  >
     <div class="title-bar" @mousedown="grab">
       <div class="title-bar-text">{{ title }}</div>
       <div class="title-bar-controls">
@@ -10,7 +13,10 @@
       <div class="notification">
         <div class="notification-icon">
           <img v-if="type == 'info'" src="./../../assets/icons/info.png" />
-          <img v-if="type == 'warning'" src="./../../assets/icons/warning_0.png" />
+          <img
+            v-if="type == 'warning'"
+            src="./../../assets/icons/warning_0.png"
+          />
           <img v-if="type == 'error'" src="./../../assets/icons/error.png" />
         </div>
         <div class="notification-body">
@@ -38,7 +44,7 @@ export default {
   mixins: [Draggable],
   methods: {
     close() {
-      this.$emit('close', { id: this.id });
+      this.$emit("close", { id: this.id });
     }
   }
 };

@@ -7,6 +7,7 @@
 <script>
 export default {
   name: "Opomuc",
+  title: "Opomuc",
   icon: "lamp_2",
   defaultWidth: 500,
   defaultHeight: 400

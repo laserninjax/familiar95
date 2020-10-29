@@ -1,5 +1,9 @@
 <template>
-  <div id="desktop" @mousedown="deselectShortcuts" :class="{ 'desktop--loading': loading }">
+  <div
+    id="desktop"
+    @mousedown="deselectShortcuts(); closeTaskbarMenu();"
+    :class="{ 'desktop--loading': loading }"
+  >
     <div id="shortcuts" class="shortcuts" ref="shortcuts">
       <Shortcut
         v-for="shortcut in shortcuts"
@@ -54,6 +58,9 @@
       :windows="windows"
       :apps="apps"
       :activeWindow="activeWindow"
+      :menuOpen="taskbarMenuOpen"
+      @openMenu="openTaskbarMenu"
+      @closeMenu="closeTaskbarMenu"
       @openApp="openApp"
       @activate-window="activateWindow"
       @minimize-window="minimizeWindow"
@@ -71,6 +78,7 @@ import Shortcut from "./Shortcut.vue";
 import About from "./apps/About.vue";
 import Mina from "./apps/Mina.vue";
 import Opomuc from "./apps/Opomuc.vue";
+import FutureInternet from "./apps/FutureInternet.vue";
 
 export default {
   name: "Desktop",
@@ -85,33 +93,19 @@ export default {
     return {
       windows: [],
       notifications: [],
-      apps: [
-        About,
-        Mina,
-        Opomuc
-      ],
+      apps: [About, Mina, Opomuc],
       loading: false,
       activeWindow: null,
       shortcuts: [
         { app: About, selected: false, x: 100, y: 200 },
         { app: Mina, selected: false, x: 100, y: 300 },
-        { app: Opomuc, selected: false, x: 200, y: 300 }
-      ]
+        { app: Opomuc, selected: false, x: 200, y: 300 },
+        { app: FutureInternet, selected: false, x: 300, y: 300}
+      ],
+      taskbarMenuOpen: false
     };
   },
-  created() {
-    for(let i=0; i < 5; i++) {
-      setTimeout(() => {
-        this.createNotification(
-          {
-            type: "error",
-            title: "Fatal error",
-            content: "<p>C:\\WINDOWS\\system32\\rundll32.exe</p><p>Application not found.</p>"
-          }
-        )
-      }, 100 * i)
-    }
-  },
+  created() {},
   mounted() {},
   methods: {
     randomId() {
@@ -134,9 +128,10 @@ export default {
     openApp(app) {
       this.deactivateWindows();
       this.deselectShortcuts();
+      this.closeTaskbarMenu();
 
       const windowProps = {
-        title: app.name,
+        title: app.title,
         x: 100 + this.windows.length * 20,
         y: 100 + this.windows.length * 20,
         width: app.defaultWidth,
@@ -152,7 +147,13 @@ export default {
       setTimeout(() => {
         this.windows.push(windowProps);
         this.loading = false;
-      }, Math.random() * 3000)
+      }, Math.random() * 3000);
+    },
+    openTaskbarMenu() {
+      this.taskbarMenuOpen = true;
+    },
+    closeTaskbarMenu() {
+      this.taskbarMenuOpen = false;
     },
     maximizeWindow(data) {
       const currentWindow = this.findWindow(data.id);
@@ -184,8 +185,8 @@ export default {
         id: this.randomId(),
         title: data.title,
         content: data.content,
-        x: window.innerWidth/2 - 200 + this.notifications.length * 20,
-        y: window.innerHeight/2 - 100 + this.notifications.length * 20,
+        x: window.innerWidth / 2 - 200 + this.notifications.length * 20,
+        y: window.innerHeight / 2 - 100 + this.notifications.length * 20,
         type: data.type
       });
     },

@@ -13,6 +13,7 @@
 <script>
 export default {
   name: "Mina",
+  title: "Mina by szlend",
   icon: "minesweeper",
   defaultWidth: 500,
   defaultHeight: 500
