@@ -22,7 +22,8 @@
       </div>
     </div>
     <div class="window-body">
-      <slot></slot>
+      <component v-if="app" :is="app" @close="close" />
+      <slot v-else></slot>
     </div>
   </div>
 </template>
@@ -42,7 +43,8 @@ export default {
     id: { type: Number, required: true },
     active: { type: Boolean, required: true },
     maximized: { type: Boolean, required: true },
-    minimized: { type: Boolean, required: true }
+    minimized: { type: Boolean, required: true },
+    app: { type: Object, default: () => null }
   },
   mixins: [Draggable],
   computed: {

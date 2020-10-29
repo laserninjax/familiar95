@@ -8,10 +8,38 @@
         </span>
       </button>
       <div v-if="startMenuOpen" class="menu" @click="closeStartMenu">
+        <div class="menu__graphic">
+            <img src="./../assets/images/windows97start.png" />
+        </div>
         <div class="menu__inner">
           <div class="menu__item">
+            <img src="./../assets/icons/program_folder_16x16px_&_24x24px-0.png" />
+            Programs
+          </div>
+          <div class="menu__item">
+            <img src="./../assets/icons/documents_folder-0.png" />
+            Documents
+          </div>
+          <div class="menu__item">
+            <img src="./../assets/icons/settings-0.png" />
+            Settings
+          </div>
+          <div class="menu__item">
+            <img src="./../assets/icons/search_in_sheet_16x16px_&_24x24px-0.png" />
+            Find
+          </div>
+          <div class="menu__item">
+            <img src="./../assets/icons/help_book-0.png" />
+            Help
+          </div>
+          <div class="menu__item" @click="$emit('openApp', runApp)">
+            <img src="./../assets/icons/program_wait-0.png" />
+            Run...
+          </div>
+          <hr>
+          <div class="menu__item">
             <img src="./../assets/icons/turn_off_computer_display_only-0.png" />
-            Shut down
+            Shut down...
           </div>
         </div>
       </div>
@@ -42,10 +70,13 @@
 </template>
 
 <script>
+import Run from "./apps/Run.vue"
+
 export default {
   name: "Taskbar",
   props: {
     windows: { type: Array, required: true },
+    apps: { type: Array, required: true },
     activeWindow: { type: Object, default: () => null }
   },
   data() {
@@ -53,7 +84,11 @@ export default {
       startMenuOpen: false
     };
   },
-  computed: {},
+  computed: {
+    runApp() {
+      return Run
+    }
+  },
   methods: {
     iconPath(taskbarWindow) {
       if (!taskbarWindow.app.icon) return null;
@@ -152,8 +187,18 @@ export default {
     }
 
     .menu {
-      padding-left: 32px;
+      padding-left: 24px;
       background: grey;
+
+      .menu__graphic {
+        position: absolute;
+        bottom: 0;
+        left: 3px;
+
+        img {
+          width: 23px;
+        }
+      }
     }
   
     .menu__item {

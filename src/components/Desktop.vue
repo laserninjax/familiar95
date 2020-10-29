@@ -1,5 +1,5 @@
 <template>
-  <div id="desktop" @mousedown="deselectShortcuts">
+  <div id="desktop" @mousedown="deselectShortcuts" :class="{ 'desktop--loading': loading }">
     <div id="shortcuts" class="shortcuts" ref="shortcuts">
       <Shortcut
         v-for="shortcut in shortcuts"
@@ -27,14 +27,13 @@
         :maximized="windowProps.maximized"
         :minimized="windowProps.minimized"
         :icon="windowProps.app.icon"
+        :app="windowProps.app"
         @move="moveWindow"
         @close="closeWindow"
         @maximize="maximizeWindow"
         @minimize="minimizeWindow"
         @click-window="activateWindow"
-      >
-        <component :is="windowProps.app" />
-      </Window>
+      />
     </div>
     <div ref="notifications" id="notifications">
       <Notification
@@ -53,7 +52,9 @@
     </div>
     <Taskbar
       :windows="windows"
+      :apps="apps"
       :activeWindow="activeWindow"
+      @openApp="openApp"
       @activate-window="activateWindow"
       @minimize-window="minimizeWindow"
     />
@@ -84,6 +85,12 @@ export default {
     return {
       windows: [],
       notifications: [],
+      apps: [
+        About,
+        Mina,
+        Opomuc
+      ],
+      loading: false,
       activeWindow: null,
       shortcuts: [
         { app: About, selected: false, x: 100, y: 200 },
@@ -140,7 +147,12 @@ export default {
         minimized: false,
         app: app
       };
-      this.windows.push(windowProps);
+
+      this.loading = true;
+      setTimeout(() => {
+        this.windows.push(windowProps);
+        this.loading = false;
+      }, Math.random() * 3000)
     },
     maximizeWindow(data) {
       const currentWindow = this.findWindow(data.id);
@@ -208,6 +220,10 @@ export default {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
+}
+
+.desktop--loading {
+  cursor: url("../assets/cursors/wait.png"), auto;
 }
 
 #windows {
