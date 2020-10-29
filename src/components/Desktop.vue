@@ -223,7 +223,7 @@ export default {
 }
 
 .desktop--loading {
-  cursor: url("../assets/cursors/wait.png"), auto;
+  cursor: url("../assets/cursors/wait.gif"), auto;
 }
 
 #windows {
