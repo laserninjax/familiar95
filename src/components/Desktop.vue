@@ -44,6 +44,7 @@
           @maximize="maximizeWindow"
           @minimize="minimizeWindow"
           @click-window="activateWindow"
+          @create-notification="createNotification"
         />
       </div>
       <div ref="notifications" id="notifications">
@@ -84,9 +85,11 @@ import Taskbar from "./Taskbar.vue";
 import Shortcut from "./Shortcut.vue";
 
 // Apps
+import MyComputer from "./apps/MyComputer.vue";
+import MyDocuments from "./apps/MyDocuments.vue";
+import RecycleBin from "./apps/RecycleBin.vue";
 import About from "./apps/About.vue";
 import Mina from "./apps/Mina.vue";
-import Opomuc from "./apps/Opomuc.vue";
 
 export default {
   name: "Desktop",
@@ -103,13 +106,15 @@ export default {
       introOpen: true,
       windows: [],
       notifications: [],
-      apps: [About, Mina, Opomuc],
+      apps: [MyComputer, MyDocuments, RecycleBin, About, Mina],
       loading: false,
       activeWindow: null,
       shortcuts: [
-        { app: About, selected: false, x: 100, y: 200 },
-        { app: Mina, selected: false, x: 100, y: 300 },
-        { app: Opomuc, selected: false, x: 200, y: 300 }
+        { app: MyComputer, selected: false, x: 0, y: 10 },
+        { app: MyDocuments, selected: false, x: 0, y: 80 },
+        { app: RecycleBin, selected: false, x: 0, y: 150 },
+        { app: About, selected: false, x: 0, y: 220 },
+        { app: Mina, selected: false, x: 0, y: 290 },
       ],
       taskbarMenuOpen: false,
       sounds: {
@@ -133,7 +138,7 @@ export default {
 
     let startup = ()=> {
       this.introOpen = false
-      this.sounds.microsoft.play();
+      //this.sounds.microsoft.play();
       document.removeEventListener("keypress", startup);
     }
     document.addEventListener("keypress", startup);
@@ -179,8 +184,9 @@ export default {
       this.loading = true;
       setTimeout(() => {
         this.windows.push(windowProps);
+        this.activeWindow = windowProps;
         this.loading = false;
-      }, Math.random() * 3000);
+      }, Math.random() * 2000);
     },
     openTaskbarMenu() {
       this.taskbarMenuOpen = true;
@@ -239,6 +245,18 @@ export default {
       this.activeWindow = this.findWindow(data.id);
       this.activeWindow.minimized = false;
       this.windows.forEach(w => (w.active = w.id == data.id));
+    },
+    openFullscreen() {
+      const docElm = document.documentElement;
+      if (docElm.requestFullscreen) {
+        docElm.requestFullscreen();
+      } else if (docElm.msRequestFullscreen) {
+        docElm.msRequestFullscreen();
+      } else if (docElm.mozRequestFullScreen) {
+        docElm.mozRequestFullScreen();
+      } else if (docElm.webkitRequestFullScreen) {
+        docElm.webkitRequestFullScreen();
+      }
     }
   }
 };
@@ -246,6 +264,8 @@ export default {
 
 <style lang="scss">
 #desktop {
+  background-image: url('https://www.itl.cat/pngfile/big/2-25560_vaporwave-wallpaper-aesthetic-purple-road.jpg');
+  background-size: cover;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
@@ -265,6 +285,6 @@ export default {
 #windows {
   position: relative;
   width: 100%;
-  height: calc(100% - 36px);
+  height: calc(100% - 30px);
 }
 </style>

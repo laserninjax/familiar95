@@ -57,6 +57,7 @@
           :key="taskbarWindow.id"
           class="taskbar__window"
           :class="{ active: activeWindow == taskbarWindow }"
+          :style="'width: ' + taskbarWindowWidth"
           @click="
             $emit(
               !taskbarWindow.minimized && taskbarWindow.active
@@ -70,15 +71,14 @@
           {{ taskbarWindow.title }}
         </button>
       </div>
-      <div class="taskbar__clock" @click="openFullscreen">
-        4:20PM
-      </div>
+      <Tray />
     </div>
   </div>
 </template>
 
 <script>
 import Run from "./apps/Run.vue";
+import Tray from "./taskbar/Tray.vue";
 
 export default {
   name: "Taskbar",
@@ -88,9 +88,15 @@ export default {
     activeWindow: { type: Object, default: () => null },
     menuOpen: { type: Boolean, required: true }
   },
+  components: {
+    Tray
+  },
   computed: {
     runApp() {
       return Run;
+    },
+    taskbarWindowWidth() {
+      return this.windows.length < 8 ? "150px" : (70/this.windows.length) + "%";
     }
   },
   methods: {
@@ -106,18 +112,6 @@ export default {
     },
     toggleMenu() {
       this.menuOpen ? this.closeMenu() : this.openMenu();
-    },
-    openFullscreen() {
-      const docElm = document.documentElement;
-      if (docElm.requestFullscreen) {
-        docElm.requestFullscreen();
-      } else if (docElm.msRequestFullscreen) {
-        docElm.msRequestFullscreen();
-      } else if (docElm.mozRequestFullScreen) {
-        docElm.mozRequestFullScreen();
-      } else if (docElm.webkitRequestFullScreen) {
-        docElm.webkitRequestFullScreen();
-      }
     }
   }
 };
@@ -167,28 +161,16 @@ export default {
     position: relative;
 
     .taskbar__window {
-      min-width: 150px;
       text-align: left;
       padding: 0 3px 0 5px;
       margin: 4px 2px 0px 2px;
 
       img {
         height: 16px;
-        vertical-align: middle;
+        vertical-align: bottom;
         margin-top: -1px;
         margin-left: 2px;
       }
-    }
-
-    .taskbar__clock {
-      position: absolute;
-      right: 3px;
-      top: 3px;
-      height: 24px;
-      line-height: 24px;
-      padding: 0 5px;
-      box-shadow: inset -1px -1px #ffffff, inset 1px 1px #0a0a0a,
-        inset -2px -2px #dfdfdf, inset 2px 2px #808080;
     }
 
     .menu {

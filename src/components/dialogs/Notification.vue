@@ -51,6 +51,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.notification-icon {
+  margin-right: 16px;
+}
+
 .notification-window {
   z-index: 10000;
   position: absolute;

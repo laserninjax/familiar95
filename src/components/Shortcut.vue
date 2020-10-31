@@ -7,7 +7,7 @@
     :style="`top: ${y}px; left: ${x}px;`"
   >
     <img v-if="app.icon" :src="iconPath" />
-    <span>{{ app.name }}</span>
+    <span>{{ app.title }}</span>
   </div>
 </template>
 
@@ -52,6 +52,7 @@ export default {
   position: absolute;
   text-align: center;
   z-index: 2;
+  width: 96px;
   img {
     display: block;
     margin: 0 auto;

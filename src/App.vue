@@ -8,7 +8,7 @@
 import Desktop from "./components/Desktop.vue";
 
 export default {
-  name: "Windows 97",
+  name: "Windows97",
   components: {
     Desktop
   }
