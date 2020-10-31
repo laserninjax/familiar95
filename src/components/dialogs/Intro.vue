@@ -3,9 +3,7 @@
     <div class="intro-window__inner">
       <p>Welcome back to</p>
       <img src="../../assets/images/1997.png" />
-      <h1>
-        Windows <span>97</span>
-      </h1>
+      <h1>Windows <span>97</span></h1>
       <p>Press any key to continue...</p>
     </div>
   </div>
@@ -19,7 +17,7 @@
   background: silver;
   padding: 8px;
   box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px grey,
-  inset 2px 2px #dfdfdf;
+    inset 2px 2px #dfdfdf;
 }
 
 .intro-window__inner {
@@ -37,7 +35,7 @@
 h1 {
   font-size: 48px;
   letter-spacing: -5px;
-  font-family: 'Arial Black', sans-serif;
+  font-family: "Arial Black", sans-serif;
   font-weight: bold;
   margin: 0 32px;
   span {

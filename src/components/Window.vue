@@ -22,7 +22,12 @@
       </div>
     </div>
     <div class="window-body">
-      <component v-if="app" :is="app" @close="close" @create-notification="createNotification" />
+      <component
+        v-if="app"
+        :is="app"
+        @close="close"
+        @create-notification="createNotification"
+      />
       <slot v-else></slot>
     </div>
   </div>
@@ -74,7 +79,7 @@ export default {
       this.$emit("close", { id: this.id });
     },
     createNotification(data) {
-      this.$emit('create-notification', data)
+      this.$emit("create-notification", data);
     }
   }
 };

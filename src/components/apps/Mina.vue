@@ -8,7 +8,8 @@
       title="Minesweeper"
     ></iframe>
     <div style="text-align: right;position: absolute; bottom: 5px;right: 5px;">
-      created by <a href="https://github.com/szlend/mina2" target="_blank">szlend</a>
+      created by
+      <a href="https://github.com/szlend/mina2" target="_blank">szlend</a>
     </div>
   </div>
 </template>

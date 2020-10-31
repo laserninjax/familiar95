@@ -96,7 +96,7 @@ export default {
       return Run;
     },
     taskbarWindowWidth() {
-      return this.windows.length < 8 ? "150px" : (70/this.windows.length) + "%";
+      return this.windows.length < 8 ? "150px" : 70 / this.windows.length + "%";
     }
   },
   methods: {

@@ -90,6 +90,7 @@ import MyDocuments from "./apps/MyDocuments.vue";
 import RecycleBin from "./apps/RecycleBin.vue";
 import About from "./apps/About.vue";
 import Mina from "./apps/Mina.vue";
+import TubeDude from "./apps/TubeDude.vue";
 
 export default {
   name: "Desktop",
@@ -106,7 +107,7 @@ export default {
       introOpen: true,
       windows: [],
       notifications: [],
-      apps: [MyComputer, MyDocuments, RecycleBin, About, Mina],
+      apps: [MyComputer, MyDocuments, RecycleBin, About, Mina, TubeDude],
       loading: false,
       activeWindow: null,
       shortcuts: [
@@ -115,6 +116,7 @@ export default {
         { app: RecycleBin, selected: false, x: 0, y: 150 },
         { app: About, selected: false, x: 0, y: 220 },
         { app: Mina, selected: false, x: 0, y: 290 },
+        { app: TubeDude, selected: false, x: 0, y: 360 }
       ],
       taskbarMenuOpen: false,
       sounds: {
@@ -136,15 +138,14 @@ export default {
       error: this.sounds.chord
     };
 
-    let startup = ()=> {
-      this.introOpen = false
+    let startup = () => {
+      this.introOpen = false;
       //this.sounds.microsoft.play();
       document.removeEventListener("keypress", startup);
-    }
+    };
     document.addEventListener("keypress", startup);
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     randomId() {
       return Math.floor(Math.random() * 99999999999);
@@ -264,8 +265,7 @@ export default {
 
 <style lang="scss">
 #desktop {
-  background-image: url('https://www.itl.cat/pngfile/big/2-25560_vaporwave-wallpaper-aesthetic-purple-road.jpg');
-  background-size: cover;
+  background: linear-gradient(90deg, #ff2ade, #1084d0);
   width: 100vw;
   height: 100vh;
   overflow: hidden;

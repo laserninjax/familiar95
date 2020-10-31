@@ -8,7 +8,7 @@
 export default {
   name: "About",
   title: "About",
-  icon: "briefcase-0",
+  icon: "pifmgr_11",
   defaultWidth: 300,
   defaultHeight: 200
 };
