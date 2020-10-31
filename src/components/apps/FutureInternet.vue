@@ -2,7 +2,8 @@
   <div>
     <input type="text" v-model="url" />
     <button @click="go">Go</button>
-    <iframe v-if="activeUrl"
+    <iframe
+      v-if="activeUrl"
       :src="url"
       width="100%"
       height="500"
@@ -22,7 +23,7 @@ export default {
     return {
       url: "",
       activeUrl: null
-    }
+    };
   },
   methods: {
     go() {

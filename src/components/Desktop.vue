@@ -1,74 +1,83 @@
 <template>
   <div
     id="desktop"
-    @mousedown="deselectShortcuts(); closeTaskbarMenu();"
+    @mousedown="
+      deselectShortcuts();
+      closeTaskbarMenu();
+    "
     :class="{ 'desktop--loading': loading }"
   >
-    <div id="shortcuts" class="shortcuts" ref="shortcuts">
-      <Shortcut
-        v-for="shortcut in shortcuts"
-        :key="shortcut.app.name"
-        :app="shortcut.app"
-        :x="shortcut.x"
-        :y="shortcut.y"
-        :selected="shortcut.selected"
-        @select="selectShortcut"
-        @open="openApp"
-        @move="moveShortcut"
+    <template v-if="introOpen">
+      <Intro />
+    </template>
+    <template v-else>
+      <div id="shortcuts" class="shortcuts" ref="shortcuts">
+        <Shortcut
+          v-for="shortcut in shortcuts"
+          :key="shortcut.app.name"
+          :app="shortcut.app"
+          :x="shortcut.x"
+          :y="shortcut.y"
+          :selected="shortcut.selected"
+          @select="selectShortcut"
+          @open="openApp"
+          @move="moveShortcut"
+        />
+      </div>
+      <div ref="windowsContainer" id="windows">
+        <Window
+          v-for="windowProps in windows"
+          :active="windowProps.active"
+          :key="windowProps.id"
+          :x="windowProps.x"
+          :y="windowProps.y"
+          :title="windowProps.title"
+          :width="windowProps.width"
+          :height="windowProps.height"
+          :id="windowProps.id"
+          :maximized="windowProps.maximized"
+          :minimized="windowProps.minimized"
+          :icon="windowProps.app.icon"
+          :app="windowProps.app"
+          @move="moveWindow"
+          @close="closeWindow"
+          @maximize="maximizeWindow"
+          @minimize="minimizeWindow"
+          @click-window="activateWindow"
+        />
+      </div>
+      <div ref="notifications" id="notifications">
+        <Notification
+          v-for="notification in notifications"
+          :key="notification.id"
+          :x="notification.x"
+          :y="notification.y"
+          :type="notification.type"
+          :title="notification.title"
+          :id="notification.id"
+          @close="closeNotification"
+          @move="moveNotification"
+        >
+          <div v-html="notification.content"></div>
+        </Notification>
+      </div>
+      <Taskbar
+        :windows="windows"
+        :apps="apps"
+        :activeWindow="activeWindow"
+        :menuOpen="taskbarMenuOpen"
+        @openMenu="openTaskbarMenu"
+        @closeMenu="closeTaskbarMenu"
+        @openApp="openApp"
+        @activate-window="activateWindow"
+        @minimize-window="minimizeWindow"
       />
-    </div>
-    <div ref="windowsContainer" id="windows">
-      <Window
-        v-for="windowProps in windows"
-        :active="windowProps.active"
-        :key="windowProps.id"
-        :x="windowProps.x"
-        :y="windowProps.y"
-        :title="windowProps.title"
-        :width="windowProps.width"
-        :height="windowProps.height"
-        :id="windowProps.id"
-        :maximized="windowProps.maximized"
-        :minimized="windowProps.minimized"
-        :icon="windowProps.app.icon"
-        :app="windowProps.app"
-        @move="moveWindow"
-        @close="closeWindow"
-        @maximize="maximizeWindow"
-        @minimize="minimizeWindow"
-        @click-window="activateWindow"
-      />
-    </div>
-    <div ref="notifications" id="notifications">
-      <Notification
-        v-for="notification in notifications"
-        :key="notification.id"
-        :x="notification.x"
-        :y="notification.y"
-        :type="notification.type"
-        :title="notification.title"
-        :id="notification.id"
-        @close="closeNotification"
-        @move="moveNotification"
-      >
-        <div v-html="notification.content"></div>
-      </Notification>
-    </div>
-    <Taskbar
-      :windows="windows"
-      :apps="apps"
-      :activeWindow="activeWindow"
-      :menuOpen="taskbarMenuOpen"
-      @openMenu="openTaskbarMenu"
-      @closeMenu="closeTaskbarMenu"
-      @openApp="openApp"
-      @activate-window="activateWindow"
-      @minimize-window="minimizeWindow"
-    />
+    </template>
   </div>
 </template>
 
 <script>
+import Intro from "./dialogs/Intro.vue";
 import Window from "./Window.vue";
 import Notification from "./dialogs/Notification.vue";
 import Taskbar from "./Taskbar.vue";
@@ -78,12 +87,12 @@ import Shortcut from "./Shortcut.vue";
 import About from "./apps/About.vue";
 import Mina from "./apps/Mina.vue";
 import Opomuc from "./apps/Opomuc.vue";
-import FutureInternet from "./apps/FutureInternet.vue";
 
 export default {
   name: "Desktop",
   props: {},
   components: {
+    Intro,
     Taskbar,
     Window,
     Notification,
@@ -91,6 +100,7 @@ export default {
   },
   data() {
     return {
+      introOpen: true,
       windows: [],
       notifications: [],
       apps: [About, Mina, Opomuc],
@@ -99,14 +109,37 @@ export default {
       shortcuts: [
         { app: About, selected: false, x: 100, y: 200 },
         { app: Mina, selected: false, x: 100, y: 300 },
-        { app: Opomuc, selected: false, x: 200, y: 300 },
-        { app: FutureInternet, selected: false, x: 300, y: 300}
+        { app: Opomuc, selected: false, x: 200, y: 300 }
       ],
-      taskbarMenuOpen: false
+      taskbarMenuOpen: false,
+      sounds: {
+        ding: new Audio(require("../assets/sounds/ding.mp3")),
+        chord: new Audio(require("../assets/sounds/chord.mp3")),
+        tada: new Audio(require("../assets/sounds/tada.mp3")),
+        chimes: new Audio(require("../assets/sounds/chimes.mp3")),
+        microsoft: new Audio(
+          require("../assets/sounds/The_Microsoft_Sound.mp3")
+        )
+      },
+      soundMap: {}
     };
   },
-  created() {},
-  mounted() {},
+  created() {
+    this.soundMap = {
+      info: this.sounds.chimes,
+      warning: this.sounds.ding,
+      error: this.sounds.chord
+    };
+
+    let startup = ()=> {
+      this.introOpen = false
+      this.sounds.microsoft.play();
+      document.removeEventListener("keypress", startup);
+    }
+    document.addEventListener("keypress", startup);
+  },
+  mounted() {
+  },
   methods: {
     randomId() {
       return Math.floor(Math.random() * 99999999999);
@@ -189,6 +222,8 @@ export default {
         y: window.innerHeight / 2 - 100 + this.notifications.length * 20,
         type: data.type
       });
+
+      this.soundMap[data.type].play();
     },
     closeNotification(data) {
       this.notifications = this.notifications.filter(w => w.id != data.id);

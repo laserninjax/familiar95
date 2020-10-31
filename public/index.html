@@ -6,10 +6,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <link rel="stylesheet" href="https://unpkg.com/98.css" />
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <title>Windows 97</title>
   </head>
   <body>
     <style>
+      * {
+        box-sizing: border-box;
+      }
+      
       body {
         font-family: "Pixelated MS Sans Serif",Arial;
         font-size: 11px;
@@ -45,6 +49,10 @@
       .menu__item:hover, .menu__item:active, .menu__item.active {
         background-color: darkblue;
         color: #fff;
+      }
+
+      .title-bar {
+        background: linear-gradient(90deg,#ff2ade,#1084d0);
       }
     </style>
     <noscript>
