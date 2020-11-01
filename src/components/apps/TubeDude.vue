@@ -31,7 +31,13 @@ export default {
   },
   mounted() {
     this.ctx = this.$refs.canvas.getContext("2d");
-    this.initGame();
+    this.tube = new Image();
+    this.tube.src = require("../../assets/icons/tube.png");
+    this.tube_food = new Image();
+    this.tube_food.src = require("../../assets/icons/tube_food.png");
+    this.tube_food.onload = () => {
+      this.initGame();
+    };
   },
   destroyed() {
     this.teardownGame();
@@ -143,13 +149,11 @@ export default {
     drawSegments() {
       this.ctx.clearRect(0, 0, 500, 500);
       this.segments.forEach(segment => {
-        this.ctx.fillStyle = "#FF0000";
-        this.ctx.fillRect(segment[0], segment[1], 10, 10);
+        this.ctx.drawImage(this.tube, segment[0], segment[1], 10, 10);
       });
     },
     drawFood() {
-      this.ctx.fillStyle = "#00FFFF";
-      this.ctx.fillRect(this.food[0], this.food[1], 10, 10);
+      this.ctx.drawImage(this.tube_food, this.food[0], this.food[1], 10, 10);
     },
     spawnFood() {
       this.food = [

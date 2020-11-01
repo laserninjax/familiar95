@@ -54,6 +54,7 @@ export default {
   mixins: [Draggable],
   computed: {
     iconPath() {
+      if (!this.icon) return;
       return require("../assets/icons/" + this.icon + ".png");
     },
     layoutStyle() {

@@ -18,23 +18,18 @@ export default {
   defaultHeight: 300,
   data() {
     return {
-      full: true
+      full: true,
+      recycleSound: new Audio(require("./../../assets/sounds/recycle.mp3"))
     };
   },
   methods: {
     emptyBin() {
       if (!this.full) return;
-
       this.full = false;
-      this.$emit("create-notification", {
-        type: "info",
-        title: "Good job!",
-        content: "Keep doing that, over and over, forever."
-      });
-
+      this.recycleSound.play();
       setTimeout(() => {
         this.full = true;
-      }, 2000);
+      }, 2500);
     }
   }
 };
