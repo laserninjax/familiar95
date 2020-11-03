@@ -91,6 +91,7 @@ import RecycleBin from "./apps/RecycleBin.vue";
 import About from "./apps/About.vue";
 import Mina from "./apps/Mina.vue";
 import TubeDude from "./apps/TubeDude.vue";
+import VideoPlayer from "./apps/VideoPlayer.vue";
 
 export default {
   name: "Desktop",
@@ -107,7 +108,15 @@ export default {
       introOpen: true,
       windows: [],
       notifications: [],
-      apps: [MyComputer, MyDocuments, RecycleBin, About, Mina, TubeDude],
+      apps: [
+        MyComputer,
+        MyDocuments,
+        RecycleBin,
+        About,
+        Mina,
+        TubeDude,
+        VideoPlayer
+      ],
       loading: false,
       activeWindow: null,
       shortcuts: [
@@ -116,7 +125,8 @@ export default {
         { app: RecycleBin, selected: false, x: 0, y: 150 },
         { app: About, selected: false, x: 0, y: 220 },
         { app: Mina, selected: false, x: 0, y: 290 },
-        { app: TubeDude, selected: false, x: 0, y: 360 }
+        { app: TubeDude, selected: false, x: 0, y: 360 },
+        { app: VideoPlayer, selected: false, x: 0, y: 430 }
       ],
       taskbarMenuOpen: false,
       sounds: {
