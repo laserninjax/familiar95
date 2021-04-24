@@ -92,6 +92,7 @@ import About from "./apps/About.vue";
 import Mina from "./apps/Mina.vue";
 import TubeDude from "./apps/TubeDude.vue";
 import VideoPlayer from "./apps/VideoPlayer.vue";
+import Internet from "./apps/Internet.vue";
 
 export default {
   name: "Desktop",
@@ -115,7 +116,8 @@ export default {
         About,
         Mina,
         TubeDude,
-        VideoPlayer
+        VideoPlayer,
+        Internet
       ],
       loading: false,
       activeWindow: null,
@@ -126,7 +128,8 @@ export default {
         { app: About, selected: false, x: 0, y: 220 },
         { app: Mina, selected: false, x: 0, y: 290 },
         { app: TubeDude, selected: false, x: 0, y: 360 },
-        { app: VideoPlayer, selected: false, x: 0, y: 430 }
+        { app: VideoPlayer, selected: false, x: 0, y: 430 },
+        { app: Internet, selected: false, x: 0, y: 500 }
       ],
       taskbarMenuOpen: false,
       sounds: {
@@ -276,6 +279,8 @@ export default {
 <style lang="scss">
 #desktop {
   background: linear-gradient(90deg, #ff2ade, #1084d0);
+  background-image: url('https://wallup.net/wp-content/uploads/2017/11/23/499694-statue-gradient-vaporwave.jpg');
+  background-size: cover;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
