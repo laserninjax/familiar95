@@ -1,4 +1,5 @@
 # familiar95
+This is a hobby project of recreating a Windows 95-like desktop in the browser using Vue.js.
 
 ## Project setup
 ```
